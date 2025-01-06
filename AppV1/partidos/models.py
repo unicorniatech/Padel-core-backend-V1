@@ -1,7 +1,14 @@
 from django.db import models
+from torneos.models import Torneo
 
 # Create your models here.
 class Partido(models.Model):
+    torneo = models.ForeignKey(
+        Torneo,
+        on_delete=models.CASCADE, #Elimina los partidos si se llega a eliminar el torneo
+        related_name="partidos",
+        verbose_name="Torneo"
+    )
     equipo_1 = models.CharField(max_length=255)  # Nombres separados por ","
     equipo_2 = models.CharField(max_length=255)  # Nombres separados por ","
     fecha = models.DateField()
