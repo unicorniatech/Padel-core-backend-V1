@@ -92,9 +92,9 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Padel_core1',  # Reemplaza con el nombre de tu base de datos
+        'NAME': 'Padel_coreV2',  # Reemplaza con el nombre de tu base de datos
         'USER': 'postgres',                  # Reemplaza con tu usuario de PostgreSQL
-        'PASSWORD': 'Cere$ozepe15',           # Reemplaza con la contraseña de tu usuario
+        'PASSWORD': 'UnicornIA-1977',           # Reemplaza con la contraseña de tu usuario
         'HOST': 'localhost',                   # Usa 'localhost' si estás trabajando localmente
         'PORT': '5432',                        # Puerto predeterminado de PostgreSQL
     }
