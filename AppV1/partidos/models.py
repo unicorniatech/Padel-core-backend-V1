@@ -1,5 +1,7 @@
 from django.db import models
 from torneos.models import Torneo
+from django.contrib.auth.models import User
+from usuarios.models import Usuario
 
 # Create your models here.
 class Partido(models.Model):
@@ -9,8 +11,18 @@ class Partido(models.Model):
         related_name="partidos",
         verbose_name="Torneo"
     )
-    equipo_1 = models.CharField(max_length=255)  # Nombres separados por ","
-    equipo_2 = models.CharField(max_length=255)  # Nombres separados por ","
+    equipo_1 = models.ManyToManyField(
+        Usuario,
+        related_name="equipo_1",
+        verbose_name= "Equipo 1",
+        limit_choices_to=2 #ESTO ES UNA PRUEBAA
+    )  
+    equipo_2 = models.ManyToManyField(
+        Usuario,
+        related_name="equipo_2",
+        verbose_name="Equipo 2",
+        limit_choices_to=2 #ESTO ES UNA PRUEBA
+    )  
     fecha = models.DateField()
     hora = models.TimeField()
     resultado = models.CharField(max_length=255, blank=True, null=True)  # Opcional, se completa después del partido
