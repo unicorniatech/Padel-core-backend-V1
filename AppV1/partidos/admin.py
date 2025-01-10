@@ -4,6 +4,7 @@ from .models import Partido
 @admin.register(Partido)
 class PartidoAdmin(admin.ModelAdmin):
     readonly_fields = ('createdP', 'modifiedP')  # Campos solo lectura en el panel de admin
+    
 
     # Funciones personalizadas para mostrar los jugadores de cada equipo
     def equipo_1_display(self, obj):

@@ -2,6 +2,7 @@ from django.db import models
 from torneos.models import Torneo
 from django.contrib.auth.models import User
 from usuarios.models import Usuario
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Partido(models.Model):
@@ -15,13 +16,13 @@ class Partido(models.Model):
         Usuario,
         related_name="equipo_1",
         verbose_name= "Equipo 1",
-        limit_choices_to=2 #ESTO ES UNA PRUEBAA
+        
     )  
     equipo_2 = models.ManyToManyField(
         Usuario,
         related_name="equipo_2",
         verbose_name="Equipo 2",
-        limit_choices_to=2 #ESTO ES UNA PRUEBA
+        
     )  
     fecha = models.DateField()
     hora = models.TimeField()
@@ -32,3 +33,9 @@ class Partido(models.Model):
     def __str__(self):
         return f"{self.equipo_1} vs {self.equipo_2} - {self.fecha} {self.hora}"
     
+    def clean(self):
+        super().clean()
+        if self.equipo_1.count() != 2:
+            raise ValidationError("El equipo 1 debe tener exactamente 2 jugadores.")
+        if self.equipo_2.count() != 2:
+            raise ValidationError("El equipo 2 debe tener exactamente 2 jugadores.")
