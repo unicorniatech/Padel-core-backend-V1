@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'usuarios',
     'partidos',
-    'torneos'
+    'torneos',
+    'aprobaciones'
 ]
 
 MIDDLEWARE = [

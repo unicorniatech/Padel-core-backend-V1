@@ -1,8 +1,8 @@
 # pendientes/serializers.py
 from rest_framework import serializers
-from .models import PendingApproval
+from .models import Aprobacion
 
-class PendingApprovalSerializer(serializers.ModelSerializer):
+class AprobacionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PendingApproval
+        model = Aprobacion
         fields = '__all__'

@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('usuarios.urls')),
     path('api/', include('torneos.urls')),
-    path('api/',include('partidos.urls')) 
+    path('api/',include('partidos.urls')),
+    path('api/', include('aprobaciones.urls')),
 ]
