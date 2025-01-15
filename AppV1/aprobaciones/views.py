@@ -39,7 +39,7 @@ class AprobacionViewSet(viewsets.ModelViewSet):
                 premio_dinero=data.get('premio_dinero', 0),
                 puntos=data.get('puntos', 0),
                 imagen_url=data.get('imagen_url', ''),
-                tags=data.get('tags', []),
+                #tags=data.get('tags', []),
             )
             return Response(
                 {"detail": "Torneo creado con éxito", "torneo_id": torneo.id},

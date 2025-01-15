@@ -1,7 +1,11 @@
-from django.urls import re_path #Esto maneja URLs
-from . import consumer
+# AppV1/AppV1/routing.py
+from aprobaciones.routing import websocket_urlpatterns as aprobaciones_ws
+# Si tuvieras otra app, importas su routing aquí: from usuarios.routing import ...
+# from partidos.routing import ...
 
-websecket_urlpatterns = [
-    re_path(r'ws/jugadores/$',consumer.MyConsumer.as_asgi()),
-]
+# Combinas:
+websocket_urlpatterns = []
+websocket_urlpatterns += aprobaciones_ws
+# websocket_urlpatterns += usuarios_ws
+# websocket_urlpatterns += partidos_ws
 
