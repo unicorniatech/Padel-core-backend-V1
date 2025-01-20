@@ -1,10 +1,21 @@
 from rest_framework import viewsets
 from .models import Usuario
+from actividad.models import ActividadReciente
 from .serializers import UsuarioSerializer
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+
+    def create_usuario(request):
+        # ... lógicas
+        usuario = Usuario.objects.create(...)
+        # Crear actividad
+        ActividadReciente.objects.create(
+            tipo='usuario',
+            descripcion=f"Registro Usuario: {usuario.nombre_completo}",
+            estado='',  # Sin aprobación
+        )
 
 
 

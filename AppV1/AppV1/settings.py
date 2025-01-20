@@ -11,21 +11,27 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv 
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_FILE = BASE_DIR / '.env'
+
+# Si existe el archivo .env, lo cargamos
+if ENV_FILE.exists():
+    load_dotenv(str(ENV_FILE))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t9ok5#7-y%#zmas=sro=y7hl(5*w7ta!q!fr6*@u#+a3q=5w&o'
-
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-##########')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'db.bmgmtsshbvjhkqwhpsmi.supabase.co']
 
 
 # Application definition
@@ -43,7 +49,8 @@ INSTALLED_APPS = [
     'usuarios',
     'partidos',
     'torneos',
-    'aprobaciones'
+    'aprobaciones', 
+    'actividad'
 ]
 
 MIDDLEWARE = [
@@ -93,11 +100,11 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Padel_coreV2',  # Reemplaza con el nombre de tu base de datos
-        'USER': 'postgres',                  # Reemplaza con tu usuario de PostgreSQL
-        'PASSWORD': 'UnicornIA-1977',           # Reemplaza con la contraseña de tu usuario
-        'HOST': 'localhost',                   # Usa 'localhost' si estás trabajando localmente
-        'PORT': '5432',                        # Puerto predeterminado de PostgreSQL
+        'NAME': os.getenv('DB_NAME'),  # Reemplaza con el nombre de tu base de datos
+        'USER': os.getenv('DB_USER'),                  # Reemplaza con tu usuario de PostgreSQL
+        'PASSWORD': os.getenv('DB_PASSWORD'),           # Reemplaza con la contraseña de tu usuario
+        'HOST': os.getenv('DB_HOST'),           # Supabase
+        'PORT': os.getenv('DB_PORT'),                        # Puerto predeterminado de PostgreSQL
     }
 }
 

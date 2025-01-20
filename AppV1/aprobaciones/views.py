@@ -5,8 +5,10 @@ from .models import Aprobacion
 from .serializers import AprobacionSerializer
 from torneos.models import Torneo
 from partidos.models import Partido
+from actividad.models import ActividadReciente
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.utils import timezone
 
 class AprobacionViewSet(viewsets.ModelViewSet):
     queryset = Aprobacion.objects.all()
@@ -20,6 +22,24 @@ class AprobacionViewSet(viewsets.ModelViewSet):
         un mensaje al grupo "aprobaciones" para notificar a los WebSockets.
         """
         instance = serializer.save()  # Guardamos la nueva aprobación en la BD
+        # Crear registro en ActividadReciente
+        # según el tipo (tournament/match).
+        if instance.tipo == 'tournament':
+            nombre_torneo = instance.data.get('nombre', 'Sin nombre')
+            ActividadReciente.objects.create(
+                fecha=timezone.now(),
+                tipo='torneo',  # o 'tournament' si prefieres
+                descripcion=f"Registro Torneo: {nombre_torneo}",
+                estado='pending',
+            )
+        elif instance.tipo == 'match':
+            ActividadReciente.objects.create(
+                fecha=timezone.now(),
+                tipo='partido',
+                descripcion="Registro Partido (pendiente)",
+                estado='pending',
+            )
+        # Si en el futuro hubiera otro tipo, else: pass
 
         # 1. Obtener la capa de canales (canal para WS)
         channel_layer = get_channel_layer()
@@ -76,6 +96,13 @@ class AprobacionViewSet(viewsets.ModelViewSet):
                 {"detail": "Torneo creado con éxito", "torneo_id": torneo.id},
                 status=status.HTTP_200_OK
             )
+            # (6) Registro de actividad para "Aprobado Torneo"
+            ActividadReciente.objects.create(
+                fecha=timezone.now(),
+                tipo='torneo',
+                descripcion=f"Aprobado Torneo: {data.get('nombre', 'Sin nombre')}",
+                estado='approved',
+            )
         elif instance.tipo == 'match':
             data = instance.data
             partido = Partido.objects.create(
@@ -89,6 +116,14 @@ class AprobacionViewSet(viewsets.ModelViewSet):
             partido.equipo_2.set(data['equipo_2_ids'])
 
             response_data = {"detail": "Partido creado con éxito", "partido_id": partido.id}
+
+            # (7) Registro de actividad para "Aprobado Partido"
+            ActividadReciente.objects.create(
+                fecha=timezone.now(),
+                tipo='partido',
+                descripcion="Aprobado Partido (creado)",
+                estado='approved',
+            )
         else:
             return Response({"detail": "Tipo no soportado."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,6 +167,23 @@ class AprobacionViewSet(viewsets.ModelViewSet):
         # Marcamos como rechazado
         instance.status = 'rejected'
         instance.save()
+
+        #Crear actividad "rechazado"
+        if instance.tipo == 'tournament':
+            nombre_torneo = instance.data.get('nombre', 'Sin nombre')
+            ActividadReciente.objects.create(
+                fecha=timezone.now(),
+                tipo='torneo',
+                descripcion=f"Rechazado Torneo: {nombre_torneo}",
+                estado='rejected',
+            )
+        elif instance.tipo == 'match':
+            ActividadReciente.objects.create(
+                fecha=timezone.now(),
+                tipo='partido',
+                descripcion="Rechazado Partido",
+                estado='rejected',
+            )
 
         # Notificar vía WebSocket
         channel_layer = get_channel_layer()
